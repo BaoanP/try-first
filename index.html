@@ -1,0 +1,1207 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>五年级英语单词闯关 - 译林版下册</title>
+<meta name="description" content="江苏译林版五年级英语下册单词闯关学习App">
+<meta name="theme-color" content="#667eea">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="单词闯关">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icons/icon-192x192.png">
+<link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192x192.png">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Microsoft YaHei','PingFang SC',sans-serif;background:linear-gradient(135deg,#0f0c29 0%,#302b63 50%,#24243e 100%);min-height:100vh;min-height:100dvh;display:flex;justify-content:center;align-items:flex-start;padding:20px;overflow-x:hidden;-webkit-tap-highlight-color:transparent;}
+#confettiCanvas{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:9999;}
+
+.app-container{background:rgba(255,255,255,0.97);border-radius:24px;box-shadow:0 20px 60px rgba(0,0,0,0.4);max-width:720px;width:100%;padding:0;position:relative;overflow:hidden;}
+.app-container::before{content:'';position:absolute;top:0;left:0;right:0;height:6px;background:linear-gradient(90deg,#f7971e,#ffd200,#f7971e);background-size:300% 100%;animation:rainbow 2s linear infinite;}
+@keyframes rainbow{0%{background-position:0% 50%;}100%{background-position:300% 50%;}}
+.app-header{background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);padding:20px 28px 16px;color:#fff;position:relative;}
+.app-header h1{text-align:center;font-size:1.5em;margin-bottom:2px;}
+.app-header .subtitle{text-align:center;font-size:0.85em;opacity:0.85;}
+.rank-bar{display:flex;align-items:center;justify-content:space-between;background:linear-gradient(135deg,#1a1a2e,#16213e);padding:10px 20px;color:#fff;}
+.rank-info{display:flex;align-items:center;gap:10px;}
+.rank-icon{font-size:1.8em;animation:rankPulse 2s ease-in-out infinite;}
+@keyframes rankPulse{0%,100%{transform:scale(1);}50%{transform:scale(1.15);}}
+.rank-name{font-size:0.9em;font-weight:bold;color:#ffd700;}
+.rank-progress{width:80px;height:6px;background:rgba(255,255,255,0.2);border-radius:3px;overflow:hidden;}
+.rank-progress-fill{height:100%;background:linear-gradient(90deg,#ffd700,#ff6b6b);border-radius:3px;transition:width 0.5s;}
+.star-info{display:flex;align-items:center;gap:6px;font-size:1.1em;font-weight:bold;color:#ffd700;}
+.game-bar{display:flex;justify-content:space-between;align-items:center;padding:12px 20px;background:linear-gradient(135deg,#e0e7ff,#f3e8ff);border-bottom:2px solid #e8e0ff;}
+.combo-display{font-size:0.95em;font-weight:bold;color:#667eea;min-width:100px;text-align:center;transition:all 0.3s;}
+.combo-display.active{color:#ff6b35;font-size:1.1em;animation:comboShake 0.3s;}
+@keyframes comboShake{0%,100%{transform:rotate(0);}25%{transform:rotate(-3deg);}75%{transform:rotate(3deg);}}
+.game-stats{display:flex;gap:16px;font-size:0.85em;color:#666;}
+.game-stats strong{color:#667eea;}
+.content-body{padding:24px 28px;}
+.unit-selector{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-bottom:20px;}
+.unit-btn{padding:7px 14px;border:2px solid #667eea;background:#fff;color:#667eea;border-radius:20px;cursor:pointer;font-size:0.85em;font-weight:bold;transition:all 0.3s;}
+.unit-btn:hover{background:#667eea;color:#fff;transform:translateY(-1px);}
+.unit-btn.active{background:linear-gradient(135deg,#667eea,#764ba2);color:#fff;border-color:transparent;box-shadow:0 3px 12px rgba(102,126,234,0.4);}
+.unit-btn.all{border-color:#f093fb;color:#f093fb;}
+.unit-btn.all.active{background:linear-gradient(135deg,#f093fb,#f5576c);color:#fff;border-color:transparent;}
+.unit-btn.review{border-color:#ff9800;color:#ff9800;}
+.unit-btn.review.active{background:linear-gradient(135deg,#ff9800,#f57c00);color:#fff;border-color:transparent;}
+.unit-btn.phrases{border-color:#4caf50;color:#4caf50;}
+.unit-btn.phrases.active{background:linear-gradient(135deg,#4caf50,#2e7d32);color:#fff;border-color:transparent;}
+.quiz-area{text-align:center;position:relative;}
+.progress-text{color:#888;font-size:0.85em;margin-bottom:8px;}
+.progress-bar-bg{width:100%;height:8px;background:#e0e0e0;border-radius:4px;margin-bottom:20px;overflow:hidden;}
+.progress-bar-fill{height:100%;background:linear-gradient(90deg,#667eea,#764ba2,#f093fb);background-size:200% 100%;border-radius:4px;transition:width 0.5s ease;animation:progressShine 2s linear infinite;}
+@keyframes progressShine{0%{background-position:0% 0%;}100%{background-position:200% 0%;}}
+.chinese-hint{font-size:2em;color:#333;font-weight:bold;margin:16px 0;min-height:56px;display:flex;align-items:center;justify-content:center;}
+.answer-input{width:80%;max-width:400px;padding:14px 20px;font-size:1.3em;border:3px solid #ddd;border-radius:16px;outline:none;text-align:center;transition:all 0.3s;margin-bottom:12px;}
+.answer-input:focus{border-color:#667eea;box-shadow:0 0 0 4px rgba(102,126,234,0.15);}
+.answer-input.correct{border-color:#4caf50;background:#f1f8f1;animation:correctPulse 0.5s;}
+@keyframes correctPulse{0%{transform:scale(1);}50%{transform:scale(1.05);}100%{transform:scale(1);}}
+.answer-input.wrong{border-color:#f44336;background:#fff5f5;animation:wrongShake 0.4s;}
+@keyframes wrongShake{0%,100%{transform:translateX(0);}20%{transform:translateX(-8px);}40%{transform:translateX(8px);}60%{transform:translateX(-5px);}80%{transform:translateX(5px);}}
+.skip-hint{color:#aaa;font-size:0.85em;margin-top:4px;animation:skipPulse 2s ease-in-out infinite;}
+@keyframes skipPulse{0%,100%{opacity:0.5;}50%{opacity:1;}}
+.btn-row{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:12px;}
+.btn{padding:10px 28px;border:none;border-radius:14px;font-size:1em;font-weight:bold;cursor:pointer;transition:all 0.3s;}
+.btn:active{transform:scale(0.95);}
+.btn-primary{background:linear-gradient(135deg,#667eea,#764ba2);color:#fff;}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 4px 16px rgba(102,126,234,0.4);}
+.btn-secondary{background:#f0f0f0;color:#555;}
+.btn-secondary:hover{background:#e0e0e0;}
+.btn-danger{background:linear-gradient(135deg,#f093fb,#f5576c);color:#fff;}
+.btn-warning{background:linear-gradient(135deg,#ff9800,#f57c00);color:#fff;}
+.feedback{font-size:4em;margin:12px 0;min-height:72px;display:flex;align-items:center;justify-content:center;}
+.feedback .emoji{display:inline-block;animation:popIn 0.5s cubic-bezier(0.68,-0.55,0.265,1.55);}
+@keyframes popIn{0%{transform:scale(0) rotate(-20deg);opacity:0;}100%{transform:scale(1) rotate(0);opacity:1;}}
+.score-fly{position:absolute;font-size:1.2em;font-weight:bold;color:#ffd700;animation:scoreFly 1.2s ease-out forwards;pointer-events:none;z-index:10;text-shadow:0 0 8px rgba(255,215,0,0.5);}
+@keyframes scoreFly{0%{opacity:1;transform:translateY(0) scale(1);}60%{opacity:1;transform:translateY(-40px) scale(1.2);}100%{opacity:0;transform:translateY(-70px) scale(0.8);}}
+.combo-fire{position:absolute;right:20px;top:50%;font-size:2.5em;animation:fireWobble 0.5s ease-in-out infinite alternate;pointer-events:none;z-index:10;filter:drop-shadow(0 0 8px rgba(255,100,0,0.6));}
+@keyframes fireWobble{0%{transform:translateY(-50%) scale(1) rotate(-5deg);}100%{transform:translateY(-50%) scale(1.1) rotate(5deg);}}
+.correct-answer{color:#4caf50;font-size:1.05em;margin:6px 0;font-weight:bold;}
+.wrong-answer{color:#f44336;font-size:1.05em;margin:6px 0;font-weight:bold;}
+.retry-hint{color:#ff9800;font-size:1em;margin:6px 0;font-weight:bold;animation:retryBounce 0.6s ease infinite;}
+@keyframes retryBounce{0%,100%{transform:translateY(0);}50%{transform:translateY(-3px);}}
+.hint-box{background:linear-gradient(135deg,#fff8e1,#fffde7);border-radius:12px;padding:12px 16px;margin:10px auto;max-width:420px;border-left:4px solid #ff9800;text-align:left;animation:hintGlow 1.5s ease-in-out infinite alternate;}
+@keyframes hintGlow{0%{box-shadow:0 0 0 rgba(255,152,0,0);}100%{box-shadow:0 0 12px rgba(255,152,0,0.2);}}
+.hint-box .hint-label{font-size:0.8em;color:#e65100;font-weight:bold;margin-bottom:4px;}
+.hint-box .hint-word{font-size:1.3em;color:#333;font-weight:bold;letter-spacing:2px;font-family:'Courier New',monospace;}
+.meaning-box{background:#f8f9ff;border-radius:12px;padding:12px 16px;margin:10px auto;max-width:420px;border-left:4px solid #667eea;text-align:left;}
+.meaning-box .en{font-size:1.2em;color:#333;font-weight:bold;}
+.meaning-box .cn{font-size:0.95em;color:#666;margin-top:4px;}
+.wordbook-btn{position:fixed;bottom:30px;right:30px;width:70px;height:70px;border-radius:50%;background:linear-gradient(135deg,#f093fb,#f5576c);color:#fff;border:none;font-size:0.85em;font-weight:bold;cursor:pointer;box-shadow:0 6px 20px rgba(245,87,108,0.4);transition:all 0.3s;z-index:100;display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1.2;}
+.wordbook-btn:hover{transform:scale(1.1);}
+.wordbook-btn .badge{position:absolute;top:-4px;right:-4px;background:#ff4444;color:#fff;border-radius:50%;width:24px;height:24px;font-size:0.75em;display:flex;align-items:center;justify-content:center;}
+.achieve-btn{position:fixed;bottom:110px;right:30px;width:60px;height:60px;border-radius:50%;background:linear-gradient(135deg,#ffd700,#ff6b6b);color:#fff;border:none;font-size:0.8em;font-weight:bold;cursor:pointer;box-shadow:0 4px 16px rgba(255,215,0,0.4);transition:all 0.3s;z-index:100;display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1.2;}
+.achieve-btn:hover{transform:scale(1.1);}
+.achieve-btn .badge{position:absolute;top:-4px;right:-4px;background:#ff4444;color:#fff;border-radius:50%;width:22px;height:22px;font-size:0.7em;display:flex;align-items:center;justify-content:center;}
+.modal-overlay{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.6);z-index:200;justify-content:center;align-items:center;backdrop-filter:blur(4px);}
+.modal-overlay.show{display:flex;}
+.modal{background:#fff;border-radius:24px;padding:28px;max-width:600px;width:92%;max-height:80vh;overflow-y:auto;position:relative;box-shadow:0 20px 60px rgba(0,0,0,0.3);animation:modalIn 0.3s ease;}
+@keyframes modalIn{0%{transform:scale(0.9);opacity:0;}100%{transform:scale(1);opacity:1;}}
+.modal h2{color:#333;margin-bottom:16px;text-align:center;}
+.modal-close{position:absolute;top:14px;right:18px;background:none;border:none;font-size:1.5em;cursor:pointer;color:#999;}
+.modal-close:hover{color:#333;}
+.wordbook-actions{display:flex;gap:10px;justify-content:center;margin-bottom:14px;flex-wrap:wrap;}
+.wordbook-list{list-style:none;}
+.wordbook-item{padding:12px 14px;border-bottom:1px solid #f0f0f0;display:flex;justify-content:space-between;align-items:center;}
+.wordbook-item:last-child{border-bottom:none;}
+.wb-en{font-size:1.1em;font-weight:bold;color:#667eea;}
+.wb-cn{color:#666;font-size:0.9em;margin-top:2px;}
+.wb-unit{font-size:0.75em;color:#999;background:#f0f0f0;padding:2px 8px;border-radius:8px;white-space:nowrap;}
+.wb-delete{background:none;border:none;color:#f44336;cursor:pointer;font-size:1.1em;padding:4px 6px;}
+.empty-wordbook{text-align:center;color:#999;padding:30px;font-size:1em;}
+.clear-wordbook{display:block;margin:14px auto 0;padding:8px 20px;background:#fff0f0;color:#f44336;border:1px solid #f44336;border-radius:12px;cursor:pointer;font-size:0.9em;}
+.start-area,.finish-area{text-align:center;padding:20px 0;}
+.start-area .big-emoji,.finish-area .big-emoji{font-size:5em;margin-bottom:12px;}
+.greeting{font-size:1.5em;color:#333;font-weight:bold;margin-bottom:16px;}
+.greeting .name{color:#667eea;}
+.wordbook-empty-hint{color:#999;font-size:0.9em;margin-top:8px;line-height:1.6;}
+.achieve-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px;}
+.achieve-card{background:#f8f9ff;border-radius:12px;padding:12px;text-align:center;position:relative;border:2px solid transparent;transition:all 0.3s;}
+.achieve-card.unlocked{border-color:#ffd700;background:linear-gradient(135deg,#fffdf0,#fff8e1);box-shadow:0 2px 8px rgba(255,215,0,0.2);}
+.achieve-card.locked{opacity:0.5;filter:grayscale(0.5);}
+.achieve-icon{font-size:2em;margin-bottom:4px;}
+.achieve-name{font-size:0.85em;font-weight:bold;color:#333;}
+.achieve-desc{font-size:0.75em;color:#888;margin-top:2px;}
+.achieve-toast{position:fixed;top:20px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,#1a1a2e,#16213e);color:#ffd700;padding:12px 24px;border-radius:16px;font-size:1em;font-weight:bold;z-index:300;animation:toastIn 0.5s ease,toastOut 0.5s ease 2.5s forwards;box-shadow:0 8px 32px rgba(0,0,0,0.3);display:flex;align-items:center;gap:10px;white-space:nowrap;}
+@keyframes toastIn{0%{transform:translateX(-50%) translateY(-60px);opacity:0;}100%{transform:translateX(-50%) translateY(0);opacity:1;}}
+@keyframes toastOut{0%{opacity:1;}100%{opacity:0;transform:translateX(-50%) translateY(-20px);}}
+@media(max-width:600px){
+    .app-container{border-radius:16px;}
+    .app-header h1{font-size:1.2em;}
+    .content-body{padding:16px;}
+    .chinese-hint{font-size:1.5em;}
+    .answer-input{font-size:1.1em;width:95%;}
+    .wordbook-btn{width:56px;height:56px;bottom:20px;right:20px;font-size:0.75em;}
+    .achieve-btn{width:48px;height:48px;bottom:86px;right:20px;font-size:0.7em;}
+    .rank-bar{padding:8px 14px;}
+    .game-bar{padding:8px 14px;}
+    .achieve-grid{grid-template-columns:1fr;}
+}
+/* PWA安装提示栏 */
+.install-banner{display:none;position:fixed;bottom:0;left:0;right:0;background:linear-gradient(135deg,#667eea,#764ba2);color:#fff;padding:14px 20px;z-index:500;animation:slideUp 0.4s ease;box-shadow:0 -4px 20px rgba(0,0,0,0.3);}
+.install-banner.show{display:flex;align-items:center;justify-content:space-between;gap:12px;}
+@keyframes slideUp{from{transform:translateY(100%);}to{transform:translateY(0);}}
+.install-banner .install-text{font-size:0.95em;line-height:1.4;flex:1;}
+.install-banner .install-text strong{font-size:1.05em;}
+.install-btn-row{display:flex;gap:8px;flex-shrink:0;}
+.install-btn-row button{padding:8px 18px;border:none;border-radius:10px;font-size:0.9em;font-weight:bold;cursor:pointer;transition:all 0.2s;}
+.install-btn-row .btn-install{background:#ffd700;color:#333;}
+.install-btn-row .btn-install:active{transform:scale(0.95);}
+.install-btn-row .btn-dismiss{background:rgba(255,255,255,0.2);color:#fff;}
+/* 安全区域适配（刘海屏） */
+@supports(padding:env(safe-area-inset-bottom)){
+    .install-banner{padding-bottom:calc(14px + env(safe-area-inset-bottom));}
+    .wordbook-btn{bottom:calc(20px + env(safe-area-inset-bottom));}
+    .achieve-btn{bottom:calc(86px + env(safe-area-inset-bottom));}
+}
+</style>
+</head>
+<body>
+
+<canvas id="confettiCanvas"></canvas>
+
+<div class="app-container" id="app">
+    <div class="app-header">
+        <h1>🎮 译林版五年级英语</h1>
+        <div class="subtitle">下册单词闯关 · 单词王者之路</div>
+    </div>
+    <div class="rank-bar">
+        <div class="rank-info">
+            <span class="rank-icon" id="rankIcon">🥉</span>
+            <div>
+                <div class="rank-name" id="rankName">单词新手</div>
+                <div class="rank-progress"><div class="rank-progress-fill" id="rankProgress" style="width:0%"></div></div>
+            </div>
+        </div>
+        <div class="star-info">
+            <span>⭐</span>
+            <span class="star-count" id="totalStars">0</span>
+        </div>
+    </div>
+    <div class="game-bar">
+        <div class="combo-display" id="comboDisplay">连击: 0</div>
+        <div class="game-stats">
+            <span>✅ <strong id="statCorrect">0</strong></span>
+            <span>❌ <strong id="statWrong">0</strong></span>
+            <span>⏳ <strong id="statRemain">0</strong></span>
+        </div>
+    </div>
+    <div class="content-body">
+        <div class="unit-selector" id="unitSelector"></div>
+        <div id="contentArea"></div>
+    </div>
+</div>
+
+<button class="achieve-btn" onclick="openAchievements()">🏅<small>成就</small><span class="badge" id="achieveBadge" style="display:none;">0</span></button>
+<button class="wordbook-btn" onclick="openWordbook()">📖<small>单词本</small><span class="badge" id="wordbookBadge" style="display:none;">0</span></button>
+
+<!-- PWA 安装提示栏 -->
+<div class="install-banner" id="installBanner">
+    <div class="install-text">📱 <strong>添加到主屏幕</strong><br>像App一样使用，离线也能学！</div>
+    <div class="install-btn-row">
+        <button class="btn-dismiss" onclick="dismissInstall()">下次</button>
+        <button class="btn-install" onclick="installApp()">安装</button>
+    </div>
+</div>
+
+<div class="modal-overlay" id="wordbookModal">
+    <div class="modal">
+        <button class="modal-close" onclick="closeWordbook()">&times;</button>
+        <h2>📖 潘奕潼的单词本</h2>
+        <div class="wordbook-actions">
+            <button class="btn btn-primary" onclick="exportWordbook()" style="padding:8px 18px;font-size:0.9em;">📄 导出Word</button>
+        </div>
+        <div id="wordbookContent"></div>
+        <button class="clear-wordbook" onclick="clearWordbook()">清空单词本</button>
+    </div>
+</div>
+
+<div class="modal-overlay" id="achieveModal">
+    <div class="modal">
+        <button class="modal-close" onclick="closeAchievements()">&times;</button>
+        <h2>🏅 成就殿堂</h2>
+        <div id="achieveContent"></div>
+    </div>
+</div>
+
+<script>
+// ==================== 常量 ====================
+var USER_NAME = '潘奕潼';
+var FIRST_TRY_SCORE = 10;
+var SECOND_TRY_SCORE = 5;
+var COMBO_BONUS = 5;
+
+// ==================== 段位系统 ====================
+var RANKS = [
+    { name: '单词新手', icon: '🥉', minStars: 0 },
+    { name: '单词学徒', icon: '🥈', minStars: 50 },
+    { name: '单词达人', icon: '🥇', minStars: 150 },
+    { name: '单词高手', icon: '💎', minStars: 350 },
+    { name: '单词大师', icon: '👑', minStars: 700 },
+    { name: '单词王者', icon: '🏆', minStars: 1200 }
+];
+
+// ==================== 成就系统 ====================
+var ACHIEVEMENTS = [
+    { id: 'first_10', name: '初露锋芒', desc: '累计获得10颗星', icon: '⭐', check: function(s){ return s.totalStars >= 10; } },
+    { id: 'first_50', name: '小有名气', desc: '累计获得50颗星', icon: '🌟', check: function(s){ return s.totalStars >= 50; } },
+    { id: 'first_150', name: '声名远扬', desc: '累计获得150颗星', icon: '💫', check: function(s){ return s.totalStars >= 150; } },
+    { id: 'first_350', name: '超级明星', desc: '累计获得350颗星', icon: '🌠', check: function(s){ return s.totalStars >= 350; } },
+    { id: 'combo5', name: '五连击', desc: '单次连续答对5题', icon: '🔥', check: function(s){ return s.maxCombo >= 5; } },
+    { id: 'combo10', name: '十连绝杀', desc: '单次连续答对10题', icon: '💥', check: function(s){ return s.maxCombo >= 10; } },
+    { id: 'combo20', name: '无敌连击', desc: '单次连续答对20题', icon: '🌋', check: function(s){ return s.maxCombo >= 20; } },
+    { id: 'perfect_unit', name: '完美单元', desc: '某个单元全部一次答对', icon: '💯', check: function(s){ return s.perfectUnits > 0; } },
+    { id: 'perfect_all', name: '全科满分', desc: '全部单词一次通过', icon: '🎯', check: function(s){ return s.perfectAll; } },
+    { id: 'wordbook10', name: '错题收集家', desc: '单词本累计收录10个词', icon: '📓', check: function(s){ return s.wordbookTotal >= 10; } },
+    { id: 'clear_wordbook', name: '错题清零', desc: '在易错过关中清空单词本', icon: '🧹', check: function(s){ return s.wordbookCleared; } },
+    { id: 'speed_demon', name: '闪电手', desc: '3秒内答对一题', icon: '⚡', check: function(s){ return s.fastestCorrect <= 3; } },
+    { id: 'sessions5', name: '坚持不懈', desc: '完成5次闯关', icon: '🏋️', check: function(s){ return s.totalSessions >= 5; } },
+    { id: 'sessions20', name: '刻苦训练', desc: '完成20次闯关', icon: '🎓', check: function(s){ return s.totalSessions >= 20; } }
+];
+
+// ==================== 状态变量 ====================
+var currentUnit = 'all';
+var wordQueue = [];
+var currentIndex = 0;
+var correctCount = 0;
+var wrongCount = 0;
+var wrongWords = [];
+var currentWrongAttempts = 0;
+var isReviewMode = false;
+var wordbook = [];
+var combo = 0;
+var maxComboThisSession = 0;
+var sessionScore = 0;
+var questionStartTime = 0;
+var unitFirstTryCount = 0;
+var isAnswering = false; // 当前是否在答题中（可输入状态）
+
+var gameStats = {
+    totalStars: 0,
+    maxCombo: 0,
+    totalSessions: 0,
+    perfectUnits: 0,
+    perfectAll: false,
+    wordbookTotal: 0,
+    wordbookCleared: false,
+    fastestCorrect: 999,
+    achievements: []
+};
+
+// ==================== 持久化 ====================
+try {
+    var savedWB = localStorage.getItem('pyt_grade5_wordbook');
+    if (savedWB) wordbook = JSON.parse(savedWB);
+} catch(e) {}
+try {
+    var savedGS = localStorage.getItem('pyt_grade5_gamestats');
+    if (savedGS) {
+        var parsed = JSON.parse(savedGS);
+        for (var key in parsed) { gameStats[key] = parsed[key]; }
+    }
+} catch(e) {}
+
+function saveWordbook() {
+    localStorage.setItem('pyt_grade5_wordbook', JSON.stringify(wordbook));
+}
+function saveGameStats() {
+    localStorage.setItem('pyt_grade5_gamestats', JSON.stringify(gameStats));
+}
+
+// ==================== 音效系统 ====================
+var audioCtx = null;
+function getAudioCtx() {
+    if (!audioCtx) {
+        try { audioCtx = new (window.AudioContext || window.webkitAudioContext)(); } catch(e) {}
+    }
+    return audioCtx;
+}
+function playTone(freq, duration, type, volume) {
+    var ctx = getAudioCtx();
+    if (!ctx) return;
+    try {
+        var osc = ctx.createOscillator();
+        var gain = ctx.createGain();
+        osc.type = type || 'sine';
+        osc.frequency.value = freq;
+        gain.gain.value = volume || 0.15;
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + duration);
+        osc.stop(ctx.currentTime + duration);
+    } catch(e) {}
+}
+function playCorrectSound() {
+    playTone(523, 0.1, 'sine', 0.12);
+    setTimeout(function(){ playTone(659, 0.1, 'sine', 0.12); }, 80);
+    setTimeout(function(){ playTone(784, 0.15, 'sine', 0.1); }, 160);
+}
+function playWrongSound() {
+    playTone(200, 0.2, 'square', 0.08);
+    setTimeout(function(){ playTone(160, 0.3, 'square', 0.06); }, 150);
+}
+function playComboSound(comboNum) {
+    var base = 600 + Math.min(comboNum, 15) * 40;
+    playTone(base, 0.08, 'sine', 0.1);
+    setTimeout(function(){ playTone(base + 200, 0.12, 'sine', 0.1); }, 60);
+}
+function playAchievementSound() {
+    playTone(523, 0.1, 'sine', 0.1);
+    setTimeout(function(){ playTone(659, 0.1, 'sine', 0.1); }, 100);
+    setTimeout(function(){ playTone(784, 0.1, 'sine', 0.1); }, 200);
+    setTimeout(function(){ playTone(1047, 0.2, 'sine', 0.1); }, 300);
+}
+function playGameOverSound() {
+    playTone(400, 0.2, 'sawtooth', 0.06);
+    setTimeout(function(){ playTone(300, 0.2, 'sawtooth', 0.06); }, 200);
+    setTimeout(function(){ playTone(200, 0.4, 'sawtooth', 0.06); }, 400);
+}
+function playSkipSound() {
+    playTone(300, 0.15, 'triangle', 0.08);
+    setTimeout(function(){ playTone(250, 0.2, 'triangle', 0.06); }, 100);
+}
+
+// ==================== 撒花特效 ====================
+var confettiPieces = [];
+var confettiAnimating = false;
+function launchConfetti(count) {
+    var canvas = document.getElementById('confettiCanvas');
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    var colors = ['#ff6b6b','#ffd93d','#6bcb77','#4d96ff','#ff9ff3','#ffd700','#ff6348','#7bed9f'];
+    for (var i = 0; i < (count || 80); i++) {
+        confettiPieces.push({
+            x: Math.random() * canvas.width,
+            y: -20 - Math.random() * 100,
+            w: 6 + Math.random() * 8,
+            h: 4 + Math.random() * 6,
+            color: colors[Math.floor(Math.random() * colors.length)],
+            vy: 2 + Math.random() * 3,
+            vx: (Math.random() - 0.5) * 4,
+            rot: Math.random() * 360,
+            rv: (Math.random() - 0.5) * 10,
+            opacity: 1
+        });
+    }
+    if (!confettiAnimating) { confettiAnimating = true; animateConfetti(); }
+}
+function animateConfetti() {
+    var canvas = document.getElementById('confettiCanvas');
+    var ctx = canvas.getContext('2d');
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    for (var i = confettiPieces.length - 1; i >= 0; i--) {
+        var p = confettiPieces[i];
+        p.x += p.vx; p.y += p.vy; p.rot += p.rv;
+        if (p.y > canvas.height + 20) p.opacity -= 0.05;
+        if (p.opacity <= 0) { confettiPieces.splice(i, 1); continue; }
+        ctx.save();
+        ctx.globalAlpha = p.opacity;
+        ctx.translate(p.x, p.y);
+        ctx.rotate(p.rot * Math.PI / 180);
+        ctx.fillStyle = p.color;
+        ctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h);
+        ctx.restore();
+    }
+    if (confettiPieces.length > 0) { requestAnimationFrame(animateConfetti); }
+    else { confettiAnimating = false; ctx.clearRect(0, 0, canvas.width, canvas.height); }
+}
+
+// ==================== 单词数据 ====================
+var WORD_DATA = {
+    1: { name: "Unit 1 老鼠和狮子", words: [
+        { en: "mouse", cn: "老鼠" },{ en: "lion", cn: "狮子" },{ en: "large", cn: "大的" },{ en: "strong", cn: "强壮的" },
+        { en: "walk by", cn: "走过；路过" },{ en: "wake up", cn: "吵醒；叫醒" },{ en: "some day", cn: "某一天" },{ en: "quietly", cn: "小声地；安静地" },
+        { en: "weak", cn: "弱的；软弱的" },{ en: "loudly", cn: "大声地" },{ en: "let go", cn: "释放；放开" },{ en: "the next day", cn: "第二天" },
+        { en: "net", cn: "网" },{ en: "bite", cn: "咬" },{ en: "sharp", cn: "锋利的；尖的" },{ en: "sadly", cn: "难过地；伤心地" },
+        { en: "just then", cn: "就在那时" },{ en: "soon", cn: "不久；很快" },{ en: "happily", cn: "开心地；高兴地" },{ en: "from then on", cn: "从那时起" },
+        { en: "cheer", cn: "欢呼" },{ en: "pour into", cn: "倒入；注入" }
+    ]},
+    2: { name: "Unit 2 你怎么来学校", words: [
+        { en: "by", cn: "乘（交通工具）" },{ en: "bus", cn: "公共汽车" },{ en: "on foot", cn: "步行" },{ en: "ship", cn: "轮船" },
+        { en: "taxi", cn: "出租车" },{ en: "train", cn: "火车" },{ en: "plane", cn: "飞机" },{ en: "metro", cn: "地铁" },
+        { en: "bike", cn: "自行车" },{ en: "ride", cn: "骑（车）" },{ en: "show", cn: "给……看" },{ en: "young", cn: "年轻的" },
+        { en: "basket", cn: "篮子" },{ en: "city", cn: "城市" },{ en: "street", cn: "街道" },{ en: "nearby", cn: "在附近" },
+        { en: "far from", cn: "离……远" },{ en: "live", cn: "居住" },{ en: "moon", cn: "月亮" },{ en: "sun", cn: "太阳" }
+    ]},
+    3: { name: "Unit 3 问路", words: [
+        { en: "ask the way", cn: "问路" },{ en: "get to", cn: "到达" },{ en: "excuse me", cn: "打扰一下" },{ en: "cinema", cn: "电影院" },
+        { en: "hospital", cn: "医院" },{ en: "shop", cn: "商店" },{ en: "zoo", cn: "动物园" },{ en: "turn left", cn: "左转" },
+        { en: "turn right", cn: "右转" },{ en: "go along", cn: "沿着……走" },{ en: "street", cn: "街道" },{ en: "next to", cn: "在……旁边" },
+        { en: "traffic light", cn: "交通灯" },{ en: "crossing", cn: "十字路口" },{ en: "over", cn: "在……上方" },{ en: "make a call", cn: "打电话" },
+        { en: "together", cn: "一起" },{ en: "taxi", cn: "出租车" },{ en: "full", cn: "满的" },{ en: "over there", cn: "在那边" },
+        { en: "bookshop", cn: "书店" },{ en: "supermarket", cn: "超市" }
+    ]},
+    4: { name: "Unit 4 看医生", words: [
+        { en: "feel", cn: "感觉" },{ en: "should", cn: "应该" },{ en: "have a rest", cn: "休息" },{ en: "toothache", cn: "牙疼" },
+        { en: "dentist", cn: "牙医" },{ en: "take medicine", cn: "吃药" },{ en: "drink water", cn: "喝水" },{ en: "fever", cn: "发烧" },
+        { en: "headache", cn: "头疼" },{ en: "cold", cn: "感冒" },{ en: "cough", cn: "咳嗽" },{ en: "earache", cn: "耳朵疼" },
+        { en: "stomachache", cn: "胃疼" },{ en: "tooth", cn: "牙齿" },{ en: "present", cn: "礼物" },{ en: "world", cn: "世界" },
+        { en: "expensive", cn: "贵的" },{ en: "check", cn: "检查" },{ en: "fit", cn: "合适" },{ en: "brush one's teeth", cn: "刷牙" }
+    ]},
+    5: { name: "Unit 5 帮助父母", words: [
+        { en: "parent", cn: "父母" },{ en: "clean the room", cn: "打扫房间" },{ en: "cook dinner", cn: "做晚饭" },{ en: "wash clothes", cn: "洗衣服" },
+        { en: "sweep the floor", cn: "扫地" },{ en: "make the bed", cn: "整理床铺" },{ en: "wash the dishes", cn: "洗碗" },{ en: "water the flowers", cn: "浇花" },
+        { en: "grow", cn: "种植；生长" },{ en: "garden", cn: "花园" },{ en: "sweet", cn: "甜的" },{ en: "pest", cn: "害虫" },
+        { en: "ladybird", cn: "瓢虫" },{ en: "go away", cn: "走开" },{ en: "help", cn: "帮助" },{ en: "busy", cn: "忙碌的" },
+        { en: "happy", cn: "开心的" }
+    ]},
+    6: { name: "Unit 6 在厨房里", words: [
+        { en: "game", cn: "游戏" },{ en: "meat", cn: "肉" },{ en: "vegetable", cn: "蔬菜" },{ en: "potato", cn: "土豆" },
+        { en: "tomato", cn: "西红柿" },{ en: "carrot", cn: "胡萝卜" },{ en: "bean", cn: "豆角" },{ en: "cook", cn: "烹饪；做饭" },
+        { en: "kitchen", cn: "厨房" },{ en: "fridge", cn: "冰箱" },{ en: "ready", cn: "准备好的" },{ en: "find", cn: "找到" },
+        { en: "chicken", cn: "鸡肉；鸡" },{ en: "pork", cn: "猪肉" },{ en: "beef", cn: "牛肉" },{ en: "milk", cn: "牛奶" },
+        { en: "bread", cn: "面包" },{ en: "rice", cn: "米饭" },{ en: "fish", cn: "鱼" },{ en: "soup", cn: "汤" }
+    ]},
+    7: { name: "Unit 7 中国节日", words: [
+        { en: "festival", cn: "节日" },{ en: "Spring Festival", cn: "春节" },{ en: "Christmas", cn: "圣诞节" },{ en: "dumpling", cn: "饺子" },
+        { en: "red packet", cn: "红包" },{ en: "firework", cn: "烟花" },{ en: "firecracker", cn: "鞭炮" },{ en: "lion dance", cn: "舞狮" },
+        { en: "reunion dinner", cn: "团圆饭" },{ en: "moon cake", cn: "月饼" },{ en: "Mid-Autumn Festival", cn: "中秋节" },{ en: "Dragon Boat Festival", cn: "端午节" },
+        { en: "rice dumpling", cn: "粽子" },{ en: "Double Ninth Festival", cn: "重阳节" },{ en: "Mountain climbing", cn: "登山" },{ en: "rice cake", cn: "重阳糕" },
+        { en: "Mother's Day", cn: "母亲节" },{ en: "Father's Day", cn: "父亲节" },{ en: "get together", cn: "团聚" },{ en: "important", cn: "重要的" }
+    ]},
+    8: { name: "Unit 8 生日", words: [
+        { en: "birthday", cn: "生日" },{ en: "birthday cake", cn: "生日蛋糕" },{ en: "birthday party", cn: "生日聚会" },{ en: "play some games", cn: "玩些游戏" },
+        { en: "candle", cn: "蜡烛" },{ en: "wish", cn: "愿望" },{ en: "blow out", cn: "吹灭" },{ en: "eat noodles", cn: "吃面条" },
+        { en: "long", cn: "长的" },{ en: "age", cn: "年龄" },{ en: "evening", cn: "傍晚；晚上" },{ en: "number", cn: "号码；数字" },
+        { en: "password", cn: "密码" },{ en: "come in", cn: "进来" },{ en: "clown", cn: "小丑" },{ en: "appear", cn: "出现" },
+        { en: "begin", cn: "开始" },{ en: "balloon", cn: "气球" },{ en: "card", cn: "卡片" },{ en: "present", cn: "礼物" }
+    ]}
+};
+
+// ==================== 初始化 ====================
+function init() {
+    renderUnitSelector();
+    renderStartScreen();
+    updateRankDisplay();
+    updateWordbookBadge();
+    updateAchieveBadge();
+    document.getElementById('totalStars').textContent = gameStats.totalStars;
+}
+
+function renderUnitSelector() {
+    var sel = document.getElementById('unitSelector');
+    var html = '<button class="unit-btn all active" onclick="selectUnit(\'all\')">🌍 全部</button>';
+    for (var num = 1; num <= 8; num++) {
+        html += '<button class="unit-btn" onclick="selectUnit(' + num + ')">' + WORD_DATA[num].name + '</button>';
+    }
+    html += '<button class="unit-btn phrases" onclick="selectUnit(\'phrases\')">📌 短语专项</button>';
+    html += '<button class="unit-btn review" onclick="selectUnit(\'review\')">🔥 易错过关</button>';
+    sel.innerHTML = html;
+}
+
+function selectUnit(unit) {
+    currentUnit = unit;
+    document.querySelectorAll('.unit-btn').forEach(function(b) { b.classList.remove('active'); });
+    var btns = document.querySelectorAll('.unit-btn');
+    if (unit === 'all') btns[0].classList.add('active');
+    else if (unit === 'phrases') btns[btns.length - 2].classList.add('active');
+    else if (unit === 'review') btns[btns.length - 1].classList.add('active');
+    else btns[unit].classList.add('active');
+    renderStartScreen();
+}
+
+// ==================== 开始画面 ====================
+function renderStartScreen() {
+    var area = document.getElementById('contentArea');
+    var words = getSelectedWords();
+    var rankInfo = getCurrentRank();
+
+    if (currentUnit === 'review') {
+        if (wordbook.length === 0) {
+            area.innerHTML = '<div class="start-area">' +
+                '<div class="greeting">Hi, <span class="name">' + USER_NAME + '</span>，你准备好过关了吗？</div>' +
+                '<div class="big-emoji">😎</div>' +
+                '<h2>🔥 易错单词过关</h2>' +
+                '<p class="wordbook-empty-hint">单词本里还没有易错单词哦！<br>先去做几轮练习，拼写错误的单词会自动加入单词本 📖</p>' +
+                '<div style="margin-top:20px;"><button class="btn btn-primary" onclick="selectUnit(\'all\')">去做练习 🚀</button></div></div>';
+            return;
+        }
+        area.innerHTML = '<div class="start-area">' +
+            '<div class="greeting">Hi, <span class="name">' + USER_NAME + '</span>，你准备好过关了吗？</div>' +
+            '<div class="big-emoji">🔥</div>' +
+            '<h2>🔥 易错单词过关</h2>' +
+            '<p>单词本中有 <strong>' + wordbook.length + '</strong> 个易错单词</p>' +
+            '<p style="color:#ff9800;font-size:0.9em;margin-top:4px;">答对即从单词本移除，这次一定要全部消灭！💪</p>' +
+            '<div style="margin-top:20px;"><button class="btn btn-warning" onclick="startReviewQuiz()">开始易错过关 🔥</button></div></div>';
+        return;
+    }
+
+    area.innerHTML = '<div class="start-area">' +
+        '<div class="greeting">Hi, <span class="name">' + USER_NAME + '</span>，你准备好过关了吗？</div>' +
+        '<div class="big-emoji">' + rankInfo.icon + '</div>' +
+        '<h2>🎮 单词闯关</h2>' +
+        '<p>当前段位：<strong style="color:#667eea;">' + rankInfo.icon + ' ' + rankInfo.name + '</strong></p>' +
+        '<p>本次挑战 <strong>' + words.length + '</strong> 个单词/短语</p>' +
+        '<p style="color:#888;font-size:0.85em;margin-top:8px;">输错重来直到正确 · ➡️ 右箭头跳过</p>' +
+        '<div style="margin-top:20px;"><button class="btn btn-primary" onclick="startQuiz()">开始闯关 🚀</button></div></div>';
+}
+
+// ==================== 获取单词 ====================
+function getSelectedWords() {
+    var words = [];
+    if (currentUnit === 'all') {
+        for (var d of Object.values(WORD_DATA)) {
+            for (var w of d.words) words.push({ en: w.en, cn: w.cn, unit: d.name });
+        }
+    } else if (currentUnit === 'phrases') {
+        for (var d of Object.values(WORD_DATA)) {
+            for (var w of d.words) {
+                if (w.en.indexOf(' ') !== -1 || w.en.indexOf("'") !== -1) words.push({ en: w.en, cn: w.cn, unit: d.name });
+            }
+        }
+    } else if (currentUnit === 'review') {
+        for (var w of wordbook) words.push({ en: w.en, cn: w.cn, unit: w.unit });
+    } else {
+        var data = WORD_DATA[currentUnit];
+        for (var w of data.words) words.push({ en: w.en, cn: w.cn, unit: data.name });
+    }
+    return words;
+}
+
+// ==================== 开始闯关 ====================
+function startQuiz() {
+    var words = getSelectedWords();
+    wordQueue = words.sort(function() { return Math.random() - 0.5; });
+    currentIndex = 0;
+    correctCount = 0;
+    wrongCount = 0;
+    wrongWords = [];
+    isReviewMode = false;
+    combo = 0;
+    maxComboThisSession = 0;
+    sessionScore = 0;
+    unitFirstTryCount = 0;
+    isAnswering = false;
+    updateComboDisplay();
+    updateGameStats();
+    showQuestion();
+}
+
+function startReviewQuiz() {
+    wordQueue = wordbook.slice().sort(function() { return Math.random() - 0.5; });
+    currentIndex = 0;
+    correctCount = 0;
+    wrongCount = 0;
+    wrongWords = [];
+    isReviewMode = true;
+    combo = 0;
+    maxComboThisSession = 0;
+    sessionScore = 0;
+    isAnswering = false;
+    updateComboDisplay();
+    updateGameStats();
+    showQuestion();
+}
+
+// ==================== 显示题目 ====================
+function showQuestion() {
+    if (currentIndex >= wordQueue.length) {
+        showFinish();
+        return;
+    }
+
+    var word = wordQueue[currentIndex];
+    currentWrongAttempts = 0;
+    isAnswering = true;
+    questionStartTime = Date.now();
+
+    var area = document.getElementById('contentArea');
+    var modeLabel = isReviewMode ? '🔥 易错过关' : '🎮 单词闯关';
+
+    area.innerHTML =
+        '<div class="quiz-area">' +
+        '<div class="progress-text">' + modeLabel + ' · 第 ' + (currentIndex + 1) + ' / ' + wordQueue.length + ' 题</div>' +
+        '<div class="progress-bar-bg"><div class="progress-bar-fill" style="width:' + ((currentIndex / wordQueue.length) * 100) + '%"></div></div>' +
+        '<div class="chinese-hint">' + word.cn + '</div>' +
+        '<input type="text" class="answer-input" id="answerInput" placeholder="请输入英文..." autocomplete="off">' +
+        '<div class="feedback" id="feedback"></div>' +
+        '<div id="meaningArea"></div>' +
+        '<div class="btn-row">' +
+            '<button class="btn btn-primary" id="confirmBtn" onclick="checkAnswer()">确认 ✅</button>' +
+        '</div>' +
+        '<div class="skip-hint" id="skipHint">➡️ 按右箭头跳过</div>' +
+        '</div>';
+
+    // 移除旧的连击火焰
+    var oldFire = document.querySelector('.combo-fire');
+    if (oldFire) oldFire.remove();
+
+    setTimeout(function() {
+        var input = document.getElementById('answerInput');
+        if (input) input.focus();
+    }, 100);
+
+    setTimeout(function() {
+        var input = document.getElementById('answerInput');
+        if (input) {
+            input.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    if (isAnswering) checkAnswer();
+                } else if (e.key === 'ArrowRight') {
+                    e.preventDefault();
+                    if (isAnswering) skipCurrentWord();
+                }
+            });
+        }
+    }, 150);
+}
+
+// ==================== 标准化 ====================
+function normalize(str) {
+    return str.trim().toLowerCase().replace(/\s+/g, ' ');
+}
+
+// ==================== 将单词加入单词本(去重) ====================
+function addToWordbook(word) {
+    var correctAnswer = normalize(word.en);
+    var alreadyIn = false;
+    for (var k = 0; k < wordbook.length; k++) {
+        if (normalize(wordbook[k].en) === correctAnswer) { alreadyIn = true; break; }
+    }
+    if (!alreadyIn) {
+        wordbook.push({ en: word.en, cn: word.cn, unit: word.unit, addedTime: new Date().toLocaleString() });
+        saveWordbook();
+        gameStats.wordbookTotal++;
+        updateWordbookBadge();
+        return true; // 新增
+    }
+    return false; // 已存在
+}
+
+// ==================== 检查答案 ====================
+function checkAnswer() {
+    var input = document.getElementById('answerInput');
+    if (!input || !isAnswering) return;
+    var userAnswer = normalize(input.value);
+    if (userAnswer === '') return;
+
+    var word = wordQueue[currentIndex];
+    var correctAnswer = normalize(word.en);
+    var isCorrect = (userAnswer === correctAnswer);
+
+    var feedback = document.getElementById('feedback');
+    var meaningArea = document.getElementById('meaningArea');
+
+    if (isCorrect) {
+        // ====== 答对 ======
+        isAnswering = false;
+        input.disabled = true;
+        input.classList.remove('correct', 'wrong');
+        input.classList.add('correct');
+        // 只有第一次就答对才计入正确数，有过错的题目不计入正确
+        if (currentWrongAttempts === 0) {
+            correctCount++;
+        }
+
+        // 计算得分
+        var timeTaken = (Date.now() - questionStartTime) / 1000;
+        var earnedScore = currentWrongAttempts === 0 ? FIRST_TRY_SCORE : SECOND_TRY_SCORE;
+        if (currentWrongAttempts === 0) unitFirstTryCount++;
+
+        // 连击：只有一次答对才连击，有过错则不连击
+        if (currentWrongAttempts === 0) {
+            combo++;
+        } else {
+            combo = 1; // 答对了但之前有错，连击重置为1
+        }
+        if (combo > maxComboThisSession) maxComboThisSession = combo;
+        var comboBonus = combo > 1 ? (combo - 1) * COMBO_BONUS : 0;
+        var totalEarned = earnedScore + comboBonus;
+        sessionScore += totalEarned;
+        gameStats.totalStars += totalEarned;
+
+        // 闪电手成就
+        if (currentWrongAttempts === 0 && timeTaken < gameStats.fastestCorrect) {
+            gameStats.fastestCorrect = timeTaken;
+        }
+
+        updateComboDisplay();
+        updateGameStats();
+        updateRankDisplay();
+        document.getElementById('totalStars').textContent = gameStats.totalStars;
+
+        playCorrectSound();
+        if (combo >= 3) playComboSound(combo);
+
+        feedback.innerHTML = '<span class="emoji">👍</span>';
+
+        // 得分飞出动画
+        var scoreFly = document.createElement('div');
+        scoreFly.className = 'score-fly';
+        var comboText = combo >= 3 ? ' 🔥x' + combo : '';
+        scoreFly.textContent = '+' + totalEarned + comboText;
+        var quizArea = document.querySelector('.quiz-area');
+        if (quizArea) {
+            quizArea.appendChild(scoreFly);
+            setTimeout(function() { scoreFly.remove(); }, 1300);
+        }
+
+        // 连击火焰
+        if (combo >= 3) {
+            showComboFire(combo);
+            if (combo === 5) launchConfetti(30);
+            if (combo === 10) launchConfetti(60);
+            if (combo === 20) launchConfetti(100);
+        }
+
+        meaningArea.innerHTML = '<div class="correct-answer">✔ 正确！' + word.en + ' = ' + word.cn + '</div>';
+
+        // 易错模式答对，从单词本移除
+        if (isReviewMode) {
+            for (var j = 0; j < wordbook.length; j++) {
+                if (normalize(wordbook[j].en) === correctAnswer) {
+                    wordbook.splice(j, 1);
+                    saveWordbook();
+                    updateWordbookBadge();
+                    break;
+                }
+            }
+        }
+
+        checkAchievements();
+        saveGameStats();
+
+        // 隐藏跳过提示
+        var skipHint = document.getElementById('skipHint');
+        if (skipHint) skipHint.style.display = 'none';
+
+        setTimeout(function() { nextQuestion(); }, 1000);
+
+    } else {
+        // ====== 答错 =======
+        currentWrongAttempts++;
+        combo = 0; // 连击中断
+        updateComboDisplay();
+        // 同一个单词只在第一次输错时计数
+        if (currentWrongAttempts === 1) wrongCount++;
+
+        input.classList.remove('correct', 'wrong');
+        input.classList.add('wrong');
+        playWrongSound();
+
+        if (currentWrongAttempts === 1) {
+            // 第一次错 - 提示重试
+            feedback.innerHTML = '<span class="emoji">🤔</span>';
+            meaningArea.innerHTML = '<div class="retry-hint">⚠️ 拼写不对，再试一次！</div>';
+        } else {
+            // 第二次及以后错 - 加入单词本，显示正确答案提示
+            var added = addToWordbook(word);
+            feedback.innerHTML = '<span class="emoji">❌</span>';
+            meaningArea.innerHTML =
+                '<div class="hint-box">' +
+                    '<div class="hint-label">💡 看仔细了，照着拼一遍：</div>' +
+                    '<div class="hint-word">' + word.en + '</div>' +
+                    (added ? '<div style="color:#f44336;font-size:0.85em;margin-top:6px;">📌 已加入「' + USER_NAME + '的单词本」</div>' : '') +
+                '</div>';
+        }
+
+        // 清空输入框，要求重新输入
+        setTimeout(function() {
+            if (!isAnswering) return;
+            input.value = '';
+            input.classList.remove('wrong');
+            input.focus();
+        }, 600);
+
+        updateGameStats();
+        checkAchievements();
+        saveGameStats();
+    }
+}
+
+// ==================== 右箭头跳过 ====================
+function skipCurrentWord() {
+    if (!isAnswering) return;
+    isAnswering = false;
+
+    var word = wordQueue[currentIndex];
+    wrongCount++;
+    combo = 0;
+    updateComboDisplay();
+    addToWordbook(word);
+
+    playSkipSound();
+
+    var input = document.getElementById('answerInput');
+    if (input) { input.disabled = true; }
+
+    var feedback = document.getElementById('feedback');
+    var meaningArea = document.getElementById('meaningArea');
+    var skipHint = document.getElementById('skipHint');
+    if (skipHint) skipHint.style.display = 'none';
+
+    feedback.innerHTML = '<span class="emoji">⏭️</span>';
+    meaningArea.innerHTML =
+        '<div class="meaning-box">' +
+            '<div class="en">' + word.en + '</div>' +
+            '<div class="cn">' + word.cn + '</div>' +
+            '<div style="color:#f44336;font-size:0.85em;margin-top:6px;">📌 已加入「' + USER_NAME + '的单词本」</div>' +
+        '</div>';
+
+    checkAchievements();
+    saveGameStats();
+    updateGameStats();
+
+    // 1.5秒后自动跳下一题
+    setTimeout(function() { nextQuestion(); }, 1500);
+}
+
+// ==================== 下一题 ====================
+function nextQuestion() {
+    isAnswering = false;
+    var fire = document.querySelector('.combo-fire');
+    if (fire) fire.remove();
+    currentIndex++;
+    showQuestion();
+}
+
+// ==================== 连击显示 ====================
+function updateComboDisplay() {
+    var el = document.getElementById('comboDisplay');
+    if (combo >= 2) {
+        var fireStr = '';
+        for (var i = 0; i < Math.min(combo, 10); i++) fireStr += '🔥';
+        el.innerHTML = fireStr + ' x' + combo;
+        el.classList.add('active');
+    } else {
+        el.innerHTML = '连击: ' + combo;
+        el.classList.remove('active');
+    }
+}
+
+function showComboFire(comboNum) {
+    var old = document.querySelector('.combo-fire');
+    if (old) old.remove();
+    var fire = document.createElement('div');
+    fire.className = 'combo-fire';
+    var fires = '';
+    var count = Math.min(Math.floor(comboNum / 2), 5);
+    for (var i = 0; i < count; i++) fires += '🔥';
+    fire.textContent = fires;
+    var quizArea = document.querySelector('.quiz-area');
+    if (quizArea) quizArea.appendChild(fire);
+}
+
+// ==================== 统计更新 ====================
+function updateGameStats() {
+    var remain = Math.max(0, wordQueue.length - currentIndex);
+    document.getElementById('statCorrect').textContent = correctCount;
+    document.getElementById('statWrong').textContent = wrongCount;
+    document.getElementById('statRemain').textContent = remain;
+}
+
+// ==================== 段位系统 ====================
+function getCurrentRank() {
+    var rank = RANKS[0];
+    for (var i = RANKS.length - 1; i >= 0; i--) {
+        if (gameStats.totalStars >= RANKS[i].minStars) { rank = RANKS[i]; break; }
+    }
+    return rank;
+}
+function getNextRank() {
+    var current = getCurrentRank();
+    var idx = RANKS.indexOf(current);
+    if (idx < RANKS.length - 1) return RANKS[idx + 1];
+    return null;
+}
+function updateRankDisplay() {
+    var rank = getCurrentRank();
+    var next = getNextRank();
+    document.getElementById('rankIcon').textContent = rank.icon;
+    document.getElementById('rankName').textContent = rank.name;
+    if (next) {
+        var progress = ((gameStats.totalStars - rank.minStars) / (next.minStars - rank.minStars)) * 100;
+        document.getElementById('rankProgress').style.width = Math.min(100, progress) + '%';
+    } else {
+        document.getElementById('rankProgress').style.width = '100%';
+    }
+}
+
+// ==================== 成就系统 ====================
+function checkAchievements() {
+    for (var i = 0; i < ACHIEVEMENTS.length; i++) {
+        var ach = ACHIEVEMENTS[i];
+        if (gameStats.achievements.indexOf(ach.id) === -1 && ach.check(gameStats)) {
+            gameStats.achievements.push(ach.id);
+            showAchievementToast(ach);
+            playAchievementSound();
+            launchConfetti(50);
+            updateAchieveBadge();
+        }
+    }
+}
+function showAchievementToast(ach) {
+    var toast = document.createElement('div');
+    toast.className = 'achieve-toast';
+    toast.innerHTML = '<span style="font-size:1.5em;">' + ach.icon + '</span> 成就解锁：' + ach.name + ' - ' + ach.desc;
+    document.body.appendChild(toast);
+    setTimeout(function() { toast.remove(); }, 3500);
+}
+function updateAchieveBadge() {
+    var unlocked = gameStats.achievements.length;
+    var badge = document.getElementById('achieveBadge');
+    if (unlocked > 0) { badge.style.display = 'flex'; badge.textContent = unlocked; }
+    else { badge.style.display = 'none'; }
+}
+function openAchievements() {
+    var content = document.getElementById('achieveContent');
+    var html = '<div style="text-align:center;color:#888;font-size:0.9em;margin-bottom:12px;">已解锁 ' + gameStats.achievements.length + ' / ' + ACHIEVEMENTS.length + '</div>';
+    html += '<div class="achieve-grid">';
+    for (var i = 0; i < ACHIEVEMENTS.length; i++) {
+        var ach = ACHIEVEMENTS[i];
+        var unlocked = gameStats.achievements.indexOf(ach.id) !== -1;
+        html += '<div class="achieve-card ' + (unlocked ? 'unlocked' : 'locked') + '">' +
+            '<div class="achieve-icon">' + (unlocked ? ach.icon : '🔒') + '</div>' +
+            '<div class="achieve-name">' + ach.name + '</div>' +
+            '<div class="achieve-desc">' + ach.desc + '</div></div>';
+    }
+    html += '</div>';
+    content.innerHTML = html;
+    document.getElementById('achieveModal').classList.add('show');
+}
+function closeAchievements() {
+    document.getElementById('achieveModal').classList.remove('show');
+}
+
+// ==================== 结束画面 ====================
+function showFinish() {
+    isAnswering = false;
+    var area = document.getElementById('contentArea');
+    var total = wordQueue.length;
+    var pct = total > 0 ? Math.round(correctCount / total * 100) : 0;
+    var emoji = '😢';
+    var title = '闯关结束';
+    if (pct >= 90) {
+        emoji = '🎉'; title = '太厉害了！'; launchConfetti(100); playAchievementSound();
+    } else if (pct >= 70) {
+        emoji = '😊'; title = '表现不错！'; launchConfetti(40);
+    } else if (pct >= 50) {
+        emoji = '💪'; title = '继续加油！';
+    } else {
+        emoji = '😢'; title = '还需努力！';
+    }
+
+    var modeLabel = isReviewMode ? '🔥 易错单词过关' : '🎮 单词闯关';
+
+    if (pct === 100 && currentUnit !== 'all' && currentUnit !== 'phrases' && currentUnit !== 'review') {
+        if (wrongCount === 0 && unitFirstTryCount === total) gameStats.perfectUnits++;
+    }
+    if (pct === 100 && currentUnit === 'all' && wrongCount === 0) gameStats.perfectAll = true;
+    if (isReviewMode && wordbook.length === 0) gameStats.wordbookCleared = true;
+
+    gameStats.totalSessions++;
+    if (maxComboThisSession > gameStats.maxCombo) gameStats.maxCombo = maxComboThisSession;
+
+    checkAchievements();
+    saveGameStats();
+    updateRankDisplay();
+
+    var finalScore = sessionScore;
+    var rankInfo = getCurrentRank();
+
+    var html = '<div class="finish-area">' +
+        '<div class="big-emoji">' + emoji + '</div>' +
+        '<h2>' + title + '</h2>' +
+        '<p>' + modeLabel + '完成！</p>' +
+        '<div style="background:linear-gradient(135deg,#f8f9ff,#f3e8ff);border-radius:16px;padding:16px;margin:16px auto;max-width:320px;">' +
+            '<p style="font-size:1.2em;">⭐ 本次得分：<strong style="color:#ffd700;font-size:1.3em;">' + finalScore + '</strong></p>' +
+            '<p style="font-size:0.95em;color:#666;margin-top:6px;">总星数：' + gameStats.totalStars + ' · 段位：' + rankInfo.icon + ' ' + rankInfo.name + '</p>' +
+        '</div>' +
+        '<p>总题数：<strong>' + total + '</strong> · 正确：<strong style="color:#4caf50;">' + correctCount + '</strong> · 错误：<strong style="color:#f44336;">' + wrongCount + '</strong></p>' +
+        '<p>正确率：<strong style="color:' + (pct >= 70 ? '#4caf50' : pct >= 50 ? '#ff9800' : '#f44336') + ';">' + pct + '%</strong>' +
+        (maxComboThisSession >= 3 ? ' · 最高连击：<strong style="color:#ff6b35;">🔥 x' + maxComboThisSession + '</strong>' : '') + '</p>';
+
+    if (isReviewMode && wordbook.length === 0) {
+        html += '<p style="color:#4caf50;margin-top:12px;font-weight:bold;">🎉 单词本已清空，全部掌握！</p>';
+    }
+    if (wrongWords.length > 0) {
+        html += '<div style="margin-top:16px;"><button class="btn btn-danger" onclick="reviewWrongWords()">复习错词 📖</button></div>';
+    }
+    html += '<div style="margin-top:10px;"><button class="btn btn-primary" onclick="renderStartScreen()">返回首页 🏠</button></div></div>';
+    area.innerHTML = html;
+}
+
+function reviewWrongWords() {
+    if (wrongWords.length === 0) return;
+    wordQueue = wrongWords.sort(function() { return Math.random() - 0.5; });
+    currentIndex = 0;
+    correctCount = 0;
+    wrongCount = 0;
+    wrongWords = [];
+    isReviewMode = false;
+    combo = 0;
+    sessionScore = 0;
+    updateComboDisplay();
+    updateGameStats();
+    showQuestion();
+}
+
+// ==================== 单词本 ====================
+function updateWordbookBadge() {
+    var badge = document.getElementById('wordbookBadge');
+    if (wordbook.length > 0) { badge.style.display = 'flex'; badge.textContent = wordbook.length; }
+    else { badge.style.display = 'none'; }
+}
+function openWordbook() {
+    var modal = document.getElementById('wordbookModal');
+    var content = document.getElementById('wordbookContent');
+    if (wordbook.length === 0) {
+        content.innerHTML = '<div class="empty-wordbook">🎉 单词本为空！<br>拼写错误两次的单词会自动出现在这里。</div>';
+    } else {
+        var html = '<p style="text-align:center;color:#888;font-size:0.9em;margin-bottom:14px;">共 ' + wordbook.length + ' 个易错单词</p>';
+        html += '<ul class="wordbook-list">';
+        for (var i = wordbook.length - 1; i >= 0; i--) {
+            var w = wordbook[i];
+            html += '<li class="wordbook-item">' +
+                '<div><div class="wb-en">' + escapeHtml(w.en) + '</div><div class="wb-cn">' + escapeHtml(w.cn) + '</div></div>' +
+                '<div style="display:flex;align-items:center;gap:8px;">' +
+                    '<span class="wb-unit">' + (w.unit ? w.unit.replace('Unit ', 'U') : '') + '</span>' +
+                    '<button class="wb-delete" onclick="deleteWordbookItem(' + i + ')" title="删除">🗑️</button>' +
+                '</div></li>';
+        }
+        html += '</ul>';
+        content.innerHTML = html;
+    }
+    modal.classList.add('show');
+}
+function deleteWordbookItem(index) {
+    wordbook.splice(index, 1);
+    saveWordbook();
+    updateWordbookBadge();
+    closeWordbook();
+    openWordbook();
+}
+function closeWordbook() {
+    document.getElementById('wordbookModal').classList.remove('show');
+}
+function clearWordbook() {
+    if (confirm('确定清空单词本吗？')) {
+        wordbook = [];
+        saveWordbook();
+        updateWordbookBadge();
+        closeWordbook();
+        openWordbook();
+    }
+}
+
+// ==================== 导出Word ====================
+function exportWordbook() {
+    if (wordbook.length === 0) { alert('单词本为空，无法导出！'); return; }
+    var rows = '<tr><th style="width:40%;">英文</th><th style="width:35%;">中文意思</th><th style="width:25%;">所属单元</th></tr>';
+    for (var i = 0; i < wordbook.length; i++) {
+        var w = wordbook[i];
+        rows += '<tr>' +
+            '<td style="padding:10px 16px;border-bottom:1px solid #e0e0e0;font-weight:bold;">' + escapeHtml(w.en) + '</td>' +
+            '<td style="padding:10px 16px;border-bottom:1px solid #e0e0e0;">' + escapeHtml(w.cn) + '</td>' +
+            '<td style="padding:10px 16px;border-bottom:1px solid #e0e0e0;color:#999;font-size:13px;">' + escapeHtml(w.unit || '') + '</td></tr>';
+    }
+    var html =
+        '<!DOCTYPE html>' +
+        '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40">' +
+        '<head><meta charset="UTF-8"><title>潘奕潼的单词本</title>' +
+        '<style>body{font-family:"微软雅黑",sans-serif;margin:40px;}h1{color:#667eea;text-align:center;font-size:28px;}.info{text-align:center;color:#888;margin-bottom:30px;font-size:14px;}table{width:100%;border-collapse:collapse;margin-top:20px;}th{background:#667eea;color:#fff;padding:12px 16px;font-size:16px;}tr:nth-child(even) td{background:#f8f9ff;}</style>' +
+        '</head><body>' +
+        '<h1>📖 潘奕潼的单词本</h1>' +
+        '<div class="info">译林版五年级英语（下册）· 易错单词汇总<br>导出时间：' + new Date().toLocaleString('zh-CN') + ' · 共 ' + wordbook.length + ' 个单词</div>' +
+        '<table>' + rows + '</table></body></html>';
+    var blob = new Blob(['\ufeff' + html], { type: 'application/msword;charset=utf-8' });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url;
+    a.download = '潘奕潼的单词本.doc';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    var tip = document.createElement('div');
+    tip.style.cssText = 'text-align:center;color:#4caf50;margin-top:12px;font-size:0.95em;';
+    tip.textContent = '✅ 已导出为 Word 文件，正在下载...';
+    var wbContent = document.getElementById('wordbookContent');
+    if (wbContent && wbContent.parentNode) {
+        wbContent.parentNode.insertBefore(tip, wbContent);
+        setTimeout(function() { tip.remove(); }, 3000);
+    }
+}
+function escapeHtml(str) {
+    if (!str) return '';
+    return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+
+// ==================== 事件绑定 ====================
+document.getElementById('wordbookModal').addEventListener('click', function(e) {
+    if (e.target === this) closeWordbook();
+});
+document.getElementById('achieveModal').addEventListener('click', function(e) {
+    if (e.target === this) closeAchievements();
+});
+
+// 全局键盘监听（右箭头跳过）
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'ArrowRight' && isAnswering) {
+        e.preventDefault();
+        skipCurrentWord();
+    }
+});
+
+window.addEventListener('resize', function() {
+    var canvas = document.getElementById('confettiCanvas');
+    if (canvas) { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+});
+
+// ==================== 启动 ====================
+init();
+
+// ==================== PWA Service Worker 注册 ====================
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', function() {
+        navigator.serviceWorker.register('./sw.js').then(function(reg) {
+            console.log('Service Worker 注册成功，scope:', reg.scope);
+        }).catch(function(err) {
+            console.log('Service Worker 注册失败:', err);
+        });
+    });
+}
+
+// ==================== PWA 安装提示 ====================
+var deferredPrompt = null;
+window.addEventListener('beforeinstallprompt', function(e) {
+    e.preventDefault();
+    deferredPrompt = e;
+    // 延迟3秒显示安装提示，让用户先看到内容
+    setTimeout(function() {
+        var dismissed = localStorage.getItem('pyt_install_dismissed');
+        if (!dismissed) {
+            document.getElementById('installBanner').classList.add('show');
+        }
+    }, 3000);
+});
+
+function installApp() {
+    if (!deferredPrompt) return;
+    deferredPrompt.prompt();
+    deferredPrompt.userChoice.then(function(choiceResult) {
+        if (choiceResult.outcome === 'accepted') {
+            console.log('用户同意安装PWA');
+        }
+        deferredPrompt = null;
+        document.getElementById('installBanner').classList.remove('show');
+    });
+}
+
+function dismissInstall() {
+    document.getElementById('installBanner').classList.remove('show');
+    localStorage.setItem('pyt_install_dismissed', '1');
+}
+
+window.addEventListener('appinstalled', function() {
+    console.log('PWA 安装完成');
+    document.getElementById('installBanner').classList.remove('show');
+    deferredPrompt = null;
+});
+</script>
+</body>
+</html>
